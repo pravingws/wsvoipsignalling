@@ -10,12 +10,14 @@ const webSocket = new Socket({httpServer:server})
 
 const users = []
 
-webSocket.on('request',(req)=>{
-    const connection = req.accept()
-   
 webSocket.on('connection', (ws, req) => {
     console.log("ADDRESS: "+req.socket.remoteAddress);
 });
+
+webSocket.on('request',(req)=>{
+    const connection = req.accept()
+   
+
     
     connection.on('message',(message)=>{
         const data = JSON.parse(message.utf8Data)
