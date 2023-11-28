@@ -9,11 +9,13 @@ server.listen(3000,()=>{
 const webSocket = new Socket({httpServer:server})
 
 const users = []
-console.log("Running Wrkspot signalling server...");
+console.log("Running Wrkspot signalling server >> "+webSocket._socket.address());
 
 webSocket.on('connection', (ws, req) => {
     console.log("ADDRESS: "+req.socket.remoteAddress);
 });
+
+
 
 webSocket.on('request',(req)=>{
     const connection = req.accept()
