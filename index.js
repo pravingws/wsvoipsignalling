@@ -9,6 +9,7 @@ server.listen(3000,()=>{
 const webSocket = new Socket({httpServer:server})
 
 const users = []
+console.log("Running Wrkspot signalling server...");
 
 webSocket.on('connection', (ws, req) => {
     console.log("ADDRESS: "+req.socket.remoteAddress);
