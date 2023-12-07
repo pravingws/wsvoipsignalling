@@ -3,7 +3,7 @@ const Socket = require("websocket").server
 const server = http.createServer(()=>{})
 
 server.listen(3000,()=>{
-    
+
 })
 
 const webSocket = new Socket({httpServer:server})
@@ -16,13 +16,17 @@ console.log("Running Wrkspot signalling server...");
 
 webSocket.on('request',(req)=>{
     const connection = req.accept()
-   
 
-    
+
+
     connection.on('message',(message)=>{
         const data = JSON.parse(message.utf8Data)
         console.log(data);
         const user = findUser(data.name)
+
+        console.log("message type..."+data.type);
+        console.log("message user..."+data.target);
+
        
         switch(data.type){
             case "call_reject":{
@@ -66,11 +70,16 @@ webSocket.on('request',(req)=>{
             case "start_call":
                 let userToCall = findUser(data.target)
 
+
                 if(userToCall){
+               console.log("message start_call userToCall..."+userToCall.name);
+
                     connection.send(JSON.stringify({
-                        type:"call_response", data:"user is ready for call"
+                        type:"call_response", data:"user is ready for call", callType:data.callType
                     }))
                 } else{
+                               console.log("message start_call userToCall not found !!");
+
                     connection.send(JSON.stringify({
                         type:"call_response", data:"user is not online"
                     }))
@@ -80,12 +89,14 @@ webSocket.on('request',(req)=>{
             
             case "create_offer":
                 let userToReceiveOffer = findUser(data.target)
+               console.log("message create_offer userToReceiveOffer..."+userToReceiveOffer);
 
                 if (userToReceiveOffer){
                     userToReceiveOffer.conn.send(JSON.stringify({
                         type:"offer_received",
                         name:data.name,
-                        data:data.data.sdp
+                        data:data.data.sdp,
+                        callType: data.callType
                     }))
                 }
             break
